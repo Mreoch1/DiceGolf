@@ -62,11 +62,11 @@ const LeaderboardModal: React.FC<LeaderboardModalProps> = ({
       const locationData = shareLocation ? location : undefined;
       
       const entry = await addLeaderboardEntry({
-        playerName: playerName.trim(),
-        courseName,
+        player_name: playerName.trim(),
+        course_name: courseName,
         score,
         location: locationData,
-        holeCount
+        hole_count: holeCount
       });
       
       onSubmitSuccess(entry);

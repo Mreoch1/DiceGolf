@@ -124,7 +124,7 @@ export const isLeaderboardQualified = async (score: number, courseName: string):
     const { data, error } = await supabase
       .from(SUPABASE_TABLE)
       .select('score')
-      .eq('courseName', courseName)
+      .eq('course_name', courseName)
       .order('score', { ascending: false }) // Get worst scores first
       .limit(10);
     
@@ -156,7 +156,7 @@ export const isLocalLeaderboardQualified = (score: number, courseName: string): 
   const leaderboard = getLocalLeaderboard();
   
   // Filter by the same course
-  const courseEntries = leaderboard.filter(entry => entry.courseName === courseName);
+  const courseEntries = leaderboard.filter(entry => entry.course_name === courseName);
   
   // If we have fewer than 10 entries for this course, any score qualifies
   if (courseEntries.length < 10) {

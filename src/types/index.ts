@@ -108,8 +108,8 @@ export type GameAction =
 // Leaderboard Types
 export interface LeaderboardEntry {
   id: string;
-  playerName: string;
-  courseName: string;
+  player_name: string;
+  course_name: string;
   score: number;
   date: string;
   location?: {
@@ -117,7 +117,7 @@ export interface LeaderboardEntry {
     state?: string;
     country?: string;
   };
-  holeCount: number;
+  hole_count: number;
 }
 
 export interface LeaderboardState {

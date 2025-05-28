@@ -38,11 +38,11 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
   
   // Filter entries based on selected course
   const filteredEntries = activeFilter
-    ? entries.filter(entry => entry.courseName === activeFilter)
+    ? entries.filter(entry => entry.course_name === activeFilter)
     : entries;
   
   // Get unique course names for filtering
-  const courseNames = Array.from(new Set(entries.map(entry => entry.courseName)));
+  const courseNames = Array.from(new Set(entries.map(entry => entry.course_name)));
   
   // Format date in a readable format
   const formatDate = (dateString: string) => {
@@ -135,13 +135,13 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
                     <td className="text-center">{index + 1}</td>
                     <td>
                       <div className="d-flex align-items-center">
-                        <span>{entry.playerName}</span>
+                        <span>{entry.player_name}</span>
                         {isSelected && (
                           <span className="badge bg-success ms-2">You</span>
                         )}
                       </div>
                     </td>
-                    <td>{entry.courseName}</td>
+                    <td>{entry.course_name}</td>
                     <td className="text-center">
                       <span className={`fw-bold ${entry.score <= 0 ? 'text-success' : 'text-dark'}`}>
                         {entry.score > 0 ? '+' : ''}{entry.score}
