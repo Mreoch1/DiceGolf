@@ -1,12 +1,23 @@
 [build]
   publish = "build"
-  command = "npm run build"
+  command = "npm ci && rm -rf build && npm run build"
 
 [build.environment]
   NODE_VERSION = "18"
+  NETLIFY_USE_YARN = "false"
+  CI = "true"
+  NPM_FLAGS = "--no-audit --no-fund"
   # These are placeholder values; set the actual values in the Netlify dashboard
   REACT_APP_SUPABASE_URL = "placeholder"
   REACT_APP_SUPABASE_ANON_KEY = "placeholder"
+
+# Cache control headers
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
+    Pragma = "no-cache"
+    Expires = "0"
 
 # Redirect all routes to index.html for client-side routing
 [[redirects]]
