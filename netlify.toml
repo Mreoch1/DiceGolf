@@ -1,0 +1,15 @@
+[build]
+  publish = "build"
+  command = "npm run build"
+
+[build.environment]
+  NODE_VERSION = "18"
+  # These are placeholder values; set the actual values in the Netlify dashboard
+  REACT_APP_SUPABASE_URL = "placeholder"
+  REACT_APP_SUPABASE_ANON_KEY = "placeholder"
+
+# Redirect all routes to index.html for client-side routing
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200 

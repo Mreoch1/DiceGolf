@@ -13,11 +13,27 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
 }) => {
   const [entries, setEntries] = useState<LeaderboardEntry[]>([]);
   const [activeFilter, setActiveFilter] = useState<string | undefined>(courseFilter);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
   
   // Load leaderboard entries
   useEffect(() => {
-    const leaderboardData = getLeaderboard();
-    setEntries(leaderboardData);
+    const fetchLeaderboard = async () => {
+      setIsLoading(true);
+      setError(null);
+      
+      try {
+        const leaderboardData = await getLeaderboard();
+        setEntries(leaderboardData);
+      } catch (err) {
+        console.error('Error fetching leaderboard:', err);
+        setError('Failed to load leaderboard data. Please try again later.');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    fetchLeaderboard();
   }, []);
   
   // Filter entries based on selected course
@@ -76,7 +92,21 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
         </div>
       </div>
       
-      {filteredEntries.length === 0 ? (
+      {isLoading ? (
+        <div className="card-body text-center py-5">
+          <div className="spinner-border text-success" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </div>
+          <p className="mt-3 text-muted">Loading leaderboard data...</p>
+        </div>
+      ) : error ? (
+        <div className="card-body text-center py-5">
+          <div className="alert alert-warning mb-0">
+            <i className="fas fa-exclamation-triangle me-2"></i>
+            {error}
+          </div>
+        </div>
+      ) : filteredEntries.length === 0 ? (
         <div className="card-body text-center py-5">
           <p className="text-muted mb-0">No leaderboard entries yet. Be the first!</p>
         </div>

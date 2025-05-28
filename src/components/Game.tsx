@@ -133,18 +133,31 @@ const Game: React.FC<GameProps> = ({ course, golferCards }) => {
       setGameCompleted(true);
       
       // Check if the score qualifies for the leaderboard
-      const qualifies = isLeaderboardQualified(
-        gameState.totalScore, 
-        course.name
-      );
+      const checkLeaderboardQualification = async () => {
+        try {
+          const qualifies = await isLeaderboardQualified(
+            gameState.totalScore, 
+            course.name
+          );
+          
+          if (qualifies) {
+            // Show the leaderboard modal after a short delay
+            setTimeout(() => {
+              setShowLeaderboardModal(true);
+              playSound('dice-land', 0.6); // Play a sound for the modal
+            }, 1000);
+          }
+        } catch (error) {
+          console.error("Error checking leaderboard qualification:", error);
+          // If there's an error, still show the modal to be safe
+          setTimeout(() => {
+            setShowLeaderboardModal(true);
+            playSound('dice-land', 0.6);
+          }, 1000);
+        }
+      };
       
-      if (qualifies) {
-        // Show the leaderboard modal after a short delay
-        setTimeout(() => {
-          setShowLeaderboardModal(true);
-          playSound('dice-land', 0.6); // Play a sound for the modal
-        }, 1000);
-      }
+      checkLeaderboardQualification();
     }
   }, [gameState.gameCompleted, gameState.totalScore, course.name]);
 

@@ -25,6 +25,7 @@ const LeaderboardModal: React.FC<LeaderboardModalProps> = ({
   const [isGettingLocation, setIsGettingLocation] = useState(false);
   const [showLocationError, setShowLocationError] = useState(false);
   const [shareLocation, setShareLocation] = useState(true);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   // Detect user's location on component mount
   useEffect(() => {
@@ -54,12 +55,13 @@ const LeaderboardModal: React.FC<LeaderboardModalProps> = ({
     if (playerName.trim() === '') return;
     
     setIsSubmitting(true);
+    setSubmitError(null);
     
     try {
       // Only include location if user opted in
       const locationData = shareLocation ? location : undefined;
       
-      const entry = addLeaderboardEntry({
+      const entry = await addLeaderboardEntry({
         playerName: playerName.trim(),
         courseName,
         score,
@@ -71,6 +73,7 @@ const LeaderboardModal: React.FC<LeaderboardModalProps> = ({
       onClose();
     } catch (error) {
       console.error('Error submitting score:', error);
+      setSubmitError('Failed to submit score. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -92,6 +95,13 @@ const LeaderboardModal: React.FC<LeaderboardModalProps> = ({
               <h4>Your Final Score: {score > 0 ? '+' : ''}{score}</h4>
               <p className="text-muted">on {courseName}</p>
             </div>
+            
+            {submitError && (
+              <div className="alert alert-danger mb-3">
+                <i className="fas fa-exclamation-triangle me-2"></i>
+                {submitError}
+              </div>
+            )}
             
             <form onSubmit={handleSubmit}>
               <div className="mb-3">

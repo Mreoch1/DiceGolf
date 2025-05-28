@@ -6,11 +6,12 @@ A strategic web-based dice-driven golf game where players use dice rolls, golfer
 
 Dice Golf simulates a realistic golf experience using dice rolls and strategy. The game combines:
 
-- **Dice rolls**: Core randomness mechanic (2d6)
+- **Dice rolls**: Core randomness mechanic (2d6) with dynamic 3D animations
 - **Golfer cards**: Each with different stat modifiers
 - **Shot selection**: Strategic choices based on lie and distance
 - **Course conditions**: Wind effects, terrain distribution, green characteristics
 - **Scorekeeping**: Full tracking of shots, scores, and performance
+- **Leaderboards**: Global score tracking with optional location sharing
 
 ## 🧩 Core Gameplay
 
@@ -51,6 +52,46 @@ Wind changes every 3 holes and affects shots:
 3. **Take shots** by clicking the appropriate shot type
 4. **Complete the hole** and move to the next one
 5. **Track your score** on the scorecard
+6. **Submit your score** to the leaderboard after completing all holes
+
+## 🏆 Leaderboard
+
+The game features a global leaderboard system that allows players to:
+
+- Submit their scores after completing a round
+- View top scores for each course
+- Share their location (optional)
+- Compare their performance with other players
+- Filter leaderboard by course
+
+The leaderboard data is stored in Supabase for shared access across all players, with localStorage as a fallback when offline or if there are connection issues.
+
+### Setting Up Supabase for the Leaderboard
+
+1. Create a free Supabase account at [supabase.com](https://supabase.com)
+2. Create a new project
+3. Create a new table called `leaderboard` with the following columns:
+
+   | Column Name | Type | Additional |
+   |-------------|------|------------|
+   | id | uuid | Primary Key |
+   | playerName | text | |
+   | courseName | text | |
+   | score | integer | |
+   | date | timestamptz | |
+   | location | jsonb | Can be null |
+   | holeCount | integer | |
+
+4. Set up Row Level Security (RLS) policies to allow anyone to read entries but restrict writes:
+   - Enable RLS on the table
+   - Create an INSERT policy that allows authenticated users to insert new rows
+   - Create a SELECT policy that allows anyone to read all rows
+
+5. Add your Supabase URL and anon key to your environment variables or the Netlify dashboard:
+   ```
+   REACT_APP_SUPABASE_URL=your_supabase_url
+   REACT_APP_SUPABASE_ANON_KEY=your_supabase_anon_key
+   ```
 
 ## 🛠️ Development
 
@@ -85,11 +126,12 @@ Note: This project uses CRACO (Create React App Configuration Override) to manag
 ## 🎲 Game Engine
 
 The core game engine handles:
-- Dice rolling mechanics
+- Dice rolling mechanics with realistic 3D animations and sound effects
 - Shot result calculation
 - Game state management
 - Scoring system
 - Wind and terrain effects
+- Leaderboard management
 
 ## 🔮 Future Enhancements
 
