@@ -1,46 +1,113 @@
-# Getting Started with Create React App
+# 🎲 Dice Golf
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A strategic web-based dice-driven golf game where players use dice rolls, golfer cards with stat modifiers, and tactical decision-making to navigate a 9-hole or 18-hole golf course.
 
-## Available Scripts
+## 🎯 Game Overview
 
-In the project directory, you can run:
+Dice Golf simulates a realistic golf experience using dice rolls and strategy. The game combines:
 
-### `npm start`
+- **Dice rolls**: Core randomness mechanic (2d6)
+- **Golfer cards**: Each with different stat modifiers
+- **Shot selection**: Strategic choices based on lie and distance
+- **Course conditions**: Wind effects, terrain distribution, green characteristics
+- **Scorekeeping**: Full tracking of shots, scores, and performance
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## 🧩 Core Gameplay
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+1. **Choose your course**: 9-hole or 18-hole options
+2. **Play each hole**:
+   - Select a golfer card (with unique stats)
+   - Take shots by rolling dice (drive, approach, chip, putt)
+   - Adapt to conditions like wind and terrain
+   - Complete the hole and see your score
+3. **Strategize**:
+   - Save your best golfer cards for challenging holes
+   - Choose appropriate shot types based on distance and lie
+   - Balance risk vs. reward
 
-### `npm test`
+## 🏌️ Golfer Cards
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Each golfer card features four stats, ranging from -3 to +3:
 
-### `npm run build`
+- **Drive**: Affects distance off the tee
+- **Accuracy**: Affects approach shot precision
+- **Short Game**: Affects chipping quality
+- **Putting**: Affects putting performance
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Choose when to play each golfer card strategically, as each can only be used on one hole.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## 🌬️ Wind System
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Wind changes every 3 holes and affects shots:
+- **Tailwind**: Helps drives go further
+- **Headwind**: Reduces drive distance
+- **Crosswind**: Reduces accuracy
+- **None**: No effect
 
-### `npm run eject`
+## 🎮 How to Play
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+1. **Start the game** and select a course
+2. **Choose a golfer card** for the current hole
+3. **Take shots** by clicking the appropriate shot type
+4. **Complete the hole** and move to the next one
+5. **Track your score** on the scorecard
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## 🛠️ Development
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+### Tech Stack
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+- **Frontend**: React + TypeScript
+- **Styling**: Bootstrap + Custom CSS
+- **State Management**: React Hooks (useState, useReducer)
 
-## Learn More
+### Running Locally
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+1. Clone the repository
+2. Install dependencies:
+   ```
+   npm install
+   ```
+3. Start the development server:
+   ```
+   npm start
+   ```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+Note: This project uses CRACO (Create React App Configuration Override) to manage configuration. The npm scripts have been updated to use CRACO instead of react-scripts.
+
+## 📝 Project Structure
+
+- `src/components/`: React components
+- `src/data/`: Sample course and golfer data
+- `src/types/`: TypeScript type definitions
+- `src/utils/`: Game engine logic
+- `src/hooks/`: Custom React hooks
+
+## 🎲 Game Engine
+
+The core game engine handles:
+- Dice rolling mechanics
+- Shot result calculation
+- Game state management
+- Scoring system
+- Wind and terrain effects
+
+## 🔮 Future Enhancements
+
+Potential future features:
+- Multiplayer support
+- Course designer
+- Custom golfer creation
+- Career mode with progression
+- More detailed statistics
+
+## CSS Configuration
+
+The project uses Bootstrap for styling with a custom CSS implementation:
+- Bootstrap is imported in index.tsx
+- Custom styles in index.css provide additional game-specific styling
+- We use CRACO (Create React App Configuration Override) to manage PostCSS configuration
+- This setup avoids issues with Tailwind CSS's PostCSS plugin
+
+---
+
+Enjoy your round of Dice Golf! ⛳

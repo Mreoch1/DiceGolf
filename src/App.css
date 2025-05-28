@@ -36,3 +36,8 @@
     transform: rotate(360deg);
   }
 }
+
+/* App specific styles */
+.app-title {
+  font-weight: 700;
+}
