@@ -635,14 +635,6 @@ export const generateResultText = (
           break;
       }
     }
-    
-    // Log putt distance calculation for debugging
-    console.log('Putt distance calculation:', {
-      originalDistance,
-      newDistance: newDistanceRemaining,
-      result,
-      message: text
-    });
   }
 
   return { text, newLie, distanceRemaining: newDistanceRemaining };
@@ -705,8 +697,6 @@ export const takeShot = (
   
   // Auto-complete on 4th putt with a reasonable score (reduced from 5th)
   if (shotType === 'putt' && consecutivePutts >= 3) {
-    console.log('Auto-completing on 4th consecutive putt');
-    
     // Force this putt to go in
     const autoCompletionText = "The ball finally drops in the cup.";
     
@@ -810,10 +800,6 @@ export const takeShot = (
     // Calculate safe position beyond the water hazard
     const waterHazardEndYards = Math.floor(((waterHazardPosition + waterHazardWidth) / 100) * holeLength);
     adjustedDistanceRemaining = holeLength - waterHazardEndYards - 10; // 10 yards past water
-    
-    // Calculate and log the yards from tee for clarity
-    const yardsFromTee = holeLength - adjustedDistanceRemaining;
-    console.log(`Water recovery: placing ball at ${yardsFromTee} yards from tee, ${adjustedDistanceRemaining} yards from hole`);
   }
   
   // Add putt counter to result text after 2 putts
@@ -942,14 +928,12 @@ export const isHoleComplete = (gameState: GameState): boolean => {
       new Set(distances).size < 3 &&
       currentHoleState.shots.length > 5
     ) {
-      console.log('Detected putt loop, forcing hole completion');
       return true;
     }
   }
   
   // Auto-complete on 4 consecutive putts (reduced from 5)
   if (consecutivePutts >= 4) {
-    console.log('Auto-completing due to 4 consecutive putts');
     return true;
   }
   
@@ -972,14 +956,6 @@ export const completeHole = (gameState: GameState): GameState => {
   
   // Score includes shots taken plus any penalties
   const score = currentHoleState.shots.length + penalties;
-  
-  // Log the score calculation for debugging
-  console.log('Complete hole score calculation:', {
-    shots: currentHoleState.shots.length,
-    penalties,
-    totalScore: score,
-    par
-  });
   
   // Update hole state
   const updatedHoleState = {
