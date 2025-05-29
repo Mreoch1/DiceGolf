@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './App.css';
 import Game from './components/Game';
 import Leaderboard from './components/Leaderboard';
+import SoundToggle from './components/SoundToggle';
 import { augustaNationalFront9, pebbleBeachFront9, fullCourse } from './data/courses';
 import { getRandomGolfers } from './data/golfers';
 import { Course } from './types';
@@ -177,6 +178,7 @@ function App() {
               <h1 className="display-5 fw-bold">🎲 Dice Golf</h1>
               <p className="text-white-50">A strategic dice-driven golf game</p>
             </div>
+            <SoundToggle />
           </div>
         </div>
       </header>
