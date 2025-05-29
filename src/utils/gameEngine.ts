@@ -526,8 +526,6 @@ export const generateResultText = (
   }
   // Putt results
   else if (shotType === 'putt') {
-    // For debugging
-    const originalDistance = distanceRemaining || 0;
     // Ensure we have a number for all calculations
     const distance = distanceRemaining || 0;
     
@@ -768,9 +766,6 @@ export const takeShot = (
   let finalPenalty = false;
   let adjustedDistanceRemaining = newDistanceRemaining;
   
-  // Check for water hazard
-  const hasWaterPenalty = newLie === 'water';
-  
   // For water hazards, automatically place the ball on fairway with penalty
   if (newLie === 'water') {
     // Override result for water hazard
@@ -949,7 +944,6 @@ export const isHoleComplete = (gameState: GameState): boolean => {
 // Complete a hole and calculate score
 export const completeHole = (gameState: GameState): GameState => {
   const currentHoleState = gameState.holes[gameState.currentHoleIndex];
-  const par = currentHoleState.hole.par;
   
   // Get penalties for this hole
   const penalties = currentHoleState.penalties || 0;
