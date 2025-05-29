@@ -7,6 +7,16 @@ interface LeaderboardProps {
   courseFilter?: string;
 }
 
+// Helper function to format location data
+const formatLocation = (location: any): string => {
+  if (!location) return '-';
+  const parts = [];
+  if (location.city) parts.push(location.city);
+  if (location.state) parts.push(location.state);
+  if (location.country && (!location.city || !location.state)) parts.push(location.country);
+  return parts.length > 0 ? parts.join(', ') : '-';
+};
+
 const Leaderboard: React.FC<LeaderboardProps> = ({
   selectedEntry,
   courseFilter
@@ -23,10 +33,17 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
       setError(null);
       
       try {
+        console.log('🔄 Fetching leaderboard data...');
         const leaderboardData = await getLeaderboard();
+        console.log('📊 Leaderboard data received:', leaderboardData);
+        
+        if (leaderboardData.length === 0) {
+          console.log('⚠️ No leaderboard entries were found');
+        }
+        
         setEntries(leaderboardData);
       } catch (err) {
-        console.error('Error fetching leaderboard:', err);
+        console.error('❌ Error fetching leaderboard:', err);
         setError('Failed to load leaderboard data. Please try again later.');
       } finally {
         setIsLoading(false);
@@ -40,6 +57,16 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
   const filteredEntries = activeFilter
     ? entries.filter(entry => entry.course_name === activeFilter)
     : entries;
+    
+  // Sort entries by score (ascending) and then by date (descending)
+  const sortedEntries = [...filteredEntries].sort((a, b) => {
+    // First sort by score (lowest/best first)
+    if (a.score !== b.score) {
+      return a.score - b.score;
+    }
+    // If scores are tied, sort by date (newest first)
+    return new Date(b.date).getTime() - new Date(a.date).getTime();
+  });
   
   // Get unique course names for filtering
   const courseNames = Array.from(new Set(entries.map(entry => entry.course_name)));
@@ -57,7 +84,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
   return (
     <div className="card shadow-sm">
       <div className="card-header bg-success bg-opacity-10 d-flex justify-content-between align-items-center">
-        <h5 className="mb-0">🏆 Leaderboard</h5>
+        <h5 className="mb-0">🏆 Top 15 Leaderboard</h5>
         
         <div className="dropdown">
           <button 
@@ -106,7 +133,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
             {error}
           </div>
         </div>
-      ) : filteredEntries.length === 0 ? (
+      ) : sortedEntries.length === 0 ? (
         <div className="card-body text-center py-5">
           <p className="text-muted mb-0">No leaderboard entries yet. Be the first!</p>
         </div>
@@ -124,7 +151,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
               </tr>
             </thead>
             <tbody>
-              {filteredEntries.map((entry, index) => {
+              {sortedEntries.map((entry, index) => {
                 const isSelected = selectedEntry?.id === entry.id;
                 
                 return (
@@ -160,16 +187,6 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
       )}
     </div>
   );
-};
-
-// Helper function to format location
-const formatLocation = (location: { city?: string; state?: string; country?: string }) => {
-  const parts = [];
-  if (location.city) parts.push(location.city);
-  if (location.state) parts.push(location.state);
-  if (location.country && (!location.city || !location.state)) parts.push(location.country);
-  
-  return parts.length > 0 ? parts.join(', ') : '-';
 };
 
 export default Leaderboard; 
