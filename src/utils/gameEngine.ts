@@ -739,24 +739,28 @@ export const takeShot = (
     const newHoles = [...gameState.holes];
     newHoles[gameState.currentHoleIndex] = updatedHoleState;
     
-    // Calculate total score
-    const updatedTotalScore = newHoles.reduce((total, hole) => {
-      if (hole.completed) {
-        const holeScoreRelativeToPar = hole.score - hole.hole.par;
-        console.log(`Hole ${hole.hole.number}: par ${hole.hole.par}, score ${hole.score}, relative: ${holeScoreRelativeToPar}`);
-        return total + holeScoreRelativeToPar;
-      }
-      return total;
-    }, 0);
+    // Calculate total score from scratch
+    let calculatedTotal = 0;
+    let holesCount = 0;
     
-    console.log('Total score calculated:', updatedTotalScore);
+    // For better debugging, calculate and log each hole separately
+    newHoles.forEach((hole, index) => {
+      if (hole.completed) {
+        holesCount++;
+        const holeScoreRelativeToPar = hole.score - hole.hole.par;
+        calculatedTotal += holeScoreRelativeToPar;
+        console.log(`Hole ${hole.hole.number}: par ${hole.hole.par}, score ${hole.score}, relative: ${holeScoreRelativeToPar}, running total: ${calculatedTotal}`);
+      }
+    });
+    
+    console.log(`Total score calculated in completeHole: ${calculatedTotal} (${holesCount} holes completed)`);
     
     // Return the updated game state and shot
     return {
       newGameState: {
         ...gameState,
         holes: newHoles,
-        totalScore: updatedTotalScore
+        totalScore: calculatedTotal
       },
       shot
     };
@@ -890,23 +894,27 @@ export const takeShot = (
   const newHoles = [...gameState.holes];
   newHoles[gameState.currentHoleIndex] = updatedHoleState;
   
-  // Calculate total score
-  const totalScoreBeforeHole = gameState.totalScore;
-  const holeScoreRelativeToPar = updatedHoleState.score - currentHole.par;
-  const totalScore = totalScoreBeforeHole + holeScoreRelativeToPar;
+  // Calculate total score from scratch
+  let calculatedTotal = 0;
+  let holesCount = 0;
   
-  console.log('Complete hole total score calculation:', {
-    totalScoreBeforeHole,
-    holeScoreRelativeToPar,
-    newTotalScore: totalScore
+  // For better debugging, calculate and log each hole separately
+  newHoles.forEach((hole, index) => {
+    if (hole.completed) {
+      holesCount++;
+      const holeScoreRelativeToPar = hole.score - hole.hole.par;
+      calculatedTotal += holeScoreRelativeToPar;
+      console.log(`Hole ${hole.hole.number}: par ${hole.hole.par}, score ${hole.score}, relative: ${holeScoreRelativeToPar}, running total: ${calculatedTotal}`);
+    }
   });
   
-  // Return the updated game state and shot
+  console.log(`Total score calculated in completeHole: ${calculatedTotal} (${holesCount} holes completed)`);
+  
   return {
     newGameState: {
       ...gameState,
       holes: newHoles,
-      totalScore
+      totalScore: calculatedTotal
     },
     shot
   };
@@ -999,21 +1007,26 @@ export const completeHole = (gameState: GameState): GameState => {
   const updatedHoles = [...gameState.holes];
   updatedHoles[gameState.currentHoleIndex] = updatedHoleState;
   
-  // Calculate new total score
-  const totalScoreBeforeHole = gameState.totalScore;
-  const holeScoreRelativeToPar = score - par;
-  const totalScore = totalScoreBeforeHole + holeScoreRelativeToPar;
+  // Calculate new total score from scratch
+  let calculatedTotal = 0;
+  let holesCount = 0;
   
-  console.log('Complete hole total score calculation:', {
-    totalScoreBeforeHole,
-    holeScoreRelativeToPar,
-    newTotalScore: totalScore
+  // For better debugging, calculate and log each hole separately
+  updatedHoles.forEach((hole, index) => {
+    if (hole.completed) {
+      holesCount++;
+      const holeScoreRelativeToPar = hole.score - hole.hole.par;
+      calculatedTotal += holeScoreRelativeToPar;
+      console.log(`Hole ${hole.hole.number}: par ${hole.hole.par}, score ${hole.score}, relative: ${holeScoreRelativeToPar}, running total: ${calculatedTotal}`);
+    }
   });
+  
+  console.log(`Total score calculated in completeHole: ${calculatedTotal} (${holesCount} holes completed)`);
   
   return {
     ...gameState,
     holes: updatedHoles,
-    totalScore
+    totalScore: calculatedTotal
   };
 };
 
