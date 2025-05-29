@@ -742,10 +742,14 @@ export const takeShot = (
     // Calculate total score
     const updatedTotalScore = newHoles.reduce((total, hole) => {
       if (hole.completed) {
-        return total + (hole.score - hole.hole.par);
+        const holeScoreRelativeToPar = hole.score - hole.hole.par;
+        console.log(`Hole ${hole.hole.number}: par ${hole.hole.par}, score ${hole.score}, relative: ${holeScoreRelativeToPar}`);
+        return total + holeScoreRelativeToPar;
       }
       return total;
     }, 0);
+    
+    console.log('Total score calculated:', updatedTotalScore);
     
     // Return the updated game state and shot
     return {
@@ -887,19 +891,22 @@ export const takeShot = (
   newHoles[gameState.currentHoleIndex] = updatedHoleState;
   
   // Calculate total score
-  const updatedTotalScore = newHoles.reduce((total, hole) => {
-    if (hole.completed) {
-      return total + (hole.score - hole.hole.par);
-    }
-    return total;
-  }, 0);
+  const totalScoreBeforeHole = gameState.totalScore;
+  const holeScoreRelativeToPar = updatedHoleState.score - currentHole.par;
+  const totalScore = totalScoreBeforeHole + holeScoreRelativeToPar;
+  
+  console.log('Complete hole total score calculation:', {
+    totalScoreBeforeHole,
+    holeScoreRelativeToPar,
+    newTotalScore: totalScore
+  });
   
   // Return the updated game state and shot
   return {
     newGameState: {
       ...gameState,
       holes: newHoles,
-      totalScore: updatedTotalScore
+      totalScore
     },
     shot
   };
@@ -993,7 +1000,15 @@ export const completeHole = (gameState: GameState): GameState => {
   updatedHoles[gameState.currentHoleIndex] = updatedHoleState;
   
   // Calculate new total score
-  const totalScore = gameState.totalScore + (score - par);
+  const totalScoreBeforeHole = gameState.totalScore;
+  const holeScoreRelativeToPar = score - par;
+  const totalScore = totalScoreBeforeHole + holeScoreRelativeToPar;
+  
+  console.log('Complete hole total score calculation:', {
+    totalScoreBeforeHole,
+    holeScoreRelativeToPar,
+    newTotalScore: totalScore
+  });
   
   return {
     ...gameState,
