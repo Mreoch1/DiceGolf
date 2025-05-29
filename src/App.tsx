@@ -1,15 +1,45 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 import Game from './components/Game';
 import Leaderboard from './components/Leaderboard';
 import { augustaNationalFront9, pebbleBeachFront9, fullCourse } from './data/courses';
 import { getRandomGolfers } from './data/golfers';
 import { Course } from './types';
+import { getLeaderboard } from './utils/leaderboardService';
+import { populateLeaderboard } from './utils/mockLeaderboardData';
 
 function App() {
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
   const [gameStarted, setGameStarted] = useState(false);
   const [showLeaderboard, setShowLeaderboard] = useState(false);
+  const [leaderboardInitialized, setLeaderboardInitialized] = useState(false);
+
+  // Initialize leaderboard with mock data if it's empty
+  useEffect(() => {
+    const initializeLeaderboard = async () => {
+      try {
+        console.log('Checking if leaderboard needs to be populated...');
+        const currentEntries = await getLeaderboard();
+        
+        if (currentEntries.length === 0) {
+          console.log('Leaderboard is empty, populating with mock data...');
+          await populateLeaderboard();
+          setLeaderboardInitialized(true);
+        } else {
+          console.log(`Leaderboard already has ${currentEntries.length} entries, no need to populate.`);
+          setLeaderboardInitialized(true);
+        }
+      } catch (error) {
+        console.error('Error initializing leaderboard:', error);
+        // Don't set initialized to true here, so we can retry if needed
+      }
+    };
+    
+    // Only run once
+    if (!leaderboardInitialized) {
+      initializeLeaderboard();
+    }
+  }, [leaderboardInitialized]);
 
   // Start the game with the selected course and golfers
   const startGame = () => {
@@ -142,8 +172,12 @@ function App() {
     <div className="min-vh-100 bg-light">
       <header className="bg-success text-white p-4 shadow-sm mb-4">
         <div className="container">
-          <h1 className="display-5 fw-bold">🎲 Dice Golf</h1>
-          <p className="text-white-50">A strategic dice-driven golf game</p>
+          <div className="d-flex justify-content-between align-items-center">
+            <div>
+              <h1 className="display-5 fw-bold">🎲 Dice Golf</h1>
+              <p className="text-white-50">A strategic dice-driven golf game</p>
+            </div>
+          </div>
         </div>
       </header>
       
@@ -158,9 +192,9 @@ function App() {
         )}
       </main>
       
-      <footer className="bg-dark text-white py-3 mt-auto">
-        <div className="container text-center small">
-          <p className="mb-0">&copy; 2023 Dice Golf. A strategy dice golf game.</p>
+      <footer className="bg-dark text-white-50 text-center py-3 mt-auto">
+        <div className="container">
+          <small>&copy; {new Date().getFullYear()} Dice Golf. A strategy dice golf game.</small>
         </div>
       </footer>
     </div>
