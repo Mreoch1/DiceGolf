@@ -26,6 +26,7 @@ const Game: React.FC<GameProps> = ({ course, golferCards }) => {
   const [gameCompleted, setGameCompleted] = useState(false);
   const [showGolferRefreshMessage, setShowGolferRefreshMessage] = useState(false);
   const [showGolferChangeMessage, setShowGolferChangeMessage] = useState(false);
+  const [golferChangeMessageText, setGolferChangeMessageText] = useState('');
   const [showLeaderboardModal, setShowLeaderboardModal] = useState(false);
   const [leaderboardEntry, setLeaderboardEntry] = useState<LeaderboardEntry | undefined>(undefined);
   const [showLeaderboard, setShowLeaderboard] = useState(false);
@@ -120,7 +121,8 @@ const Game: React.FC<GameProps> = ({ course, golferCards }) => {
     
     // Check if we've already selected a golfer for this hole
     if (currentHoleState.selectedGolfer && currentHoleState.shots.length === 0) {
-      setShowGolferChangeMessage(`Switched to ${gameState.golferCards.find(card => card.id === golferId)?.name || 'new golfer'}`);
+      const newGolferName = gameState.golferCards.find(card => card.id === golferId)?.name || 'new golfer';
+      setGolferChangeMessageText(`Switched to ${newGolferName}`);
       setShowGolferChangeMessage(true);
       
       // Hide the message after 3 seconds
@@ -362,8 +364,8 @@ const Game: React.FC<GameProps> = ({ course, golferCards }) => {
       )}
       
       {showGolferChangeMessage && (
-        <div className="alert alert-info mb-4 text-center animate__animated animate__fadeIn">
-          <strong>Golfer changed!</strong> You can change your golfer freely before teeing off.
+        <div className="alert alert-info mb-4 text-center">
+          <strong>{golferChangeMessageText}</strong>
         </div>
       )}
       
