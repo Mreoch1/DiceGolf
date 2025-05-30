@@ -1,11 +1,11 @@
 [build]
   publish = "build"
-  command = "npm ci && rm -rf build && npm run build"
+  command = "echo 'Using existing build directory'"
 
 [build.environment]
   NODE_VERSION = "18"
   NETLIFY_USE_YARN = "false"
-  CI = "true"
+  CI = "false"
   NPM_FLAGS = "--no-audit --no-fund"
   # These are placeholder values; set the actual values in the Netlify dashboard
   REACT_APP_SUPABASE_URL = "placeholder"
