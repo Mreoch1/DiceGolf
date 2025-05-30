@@ -7,11 +7,10 @@ import ShotControls from './ShotControls';
 import LeaderboardModal from './LeaderboardModal';
 import Leaderboard from './Leaderboard';
 import HoleOverview from './HoleOverview';
+import VolumeControl from './VolumeControl';
 import { useGameReducer } from '../hooks/useGameReducer';
 import { Course, GolferCard as GolferCardType, ShotType, TerrainType, LeaderboardEntry } from '../types';
-import { playSound } from '../utils/soundEffects';
 import { isLeaderboardQualified } from '../utils/leaderboardService';
-import soundManager from '../utils/soundManager';
 
 interface GameProps {
   course: Course;
@@ -116,9 +115,6 @@ const Game: React.FC<GameProps> = ({ course, golferCards }) => {
   
   // Handle selecting a golfer
   const handleSelectGolfer = (golferId: string) => {
-    // Play click sound
-    soundManager.play('click');
-    
     // Check if we've already selected a golfer for this hole
     if (currentHoleState.selectedGolfer && currentHoleState.shots.length === 0) {
       const newGolferName = gameState.golferCards.find(card => card.id === golferId)?.name || 'new golfer';
@@ -129,9 +125,6 @@ const Game: React.FC<GameProps> = ({ course, golferCards }) => {
       setTimeout(() => {
         setShowGolferChangeMessage(false);
       }, 3000);
-      
-      // Play a sound for golfer change
-      playSound('dice-land', 0.5);
     }
     
     dispatch({ type: 'SELECT_GOLFER', payload: { golferId } });
@@ -143,8 +136,15 @@ const Game: React.FC<GameProps> = ({ course, golferCards }) => {
     const isWaterShot = currentLie === 'water';
     const rollDuration = isWaterShot ? 800 : 1500;
     
-    // Play dice roll sound
-    soundManager.play('dice-roll');
+    // Play ONLY dice roll sound - nothing else
+    try {
+      console.log(`GAME (${new Date().toISOString()}): Playing ONLY dice roll sound`);
+      const diceSound = new Audio('/sounds/dice-roll.wav');
+      diceSound.volume = 0.5;
+      diceSound.play();
+    } catch (error) {
+      console.error('Failed to play dice roll sound:', error);
+    }
     
     // Show rolling animation
     setIsRolling(true);
@@ -161,8 +161,7 @@ const Game: React.FC<GameProps> = ({ course, golferCards }) => {
       // Set the dice values for display
       setDiceValues(diceRoll);
       
-      // Play dice landing sound
-      soundManager.play('dice-land');
+      // NO CLICK SOUND or any other sound here
       
       // Track the current shot count to detect a new shot was added
       const currentShotCount = currentHoleState.shots.length;
@@ -183,23 +182,6 @@ const Game: React.FC<GameProps> = ({ course, golferCards }) => {
         if (hasNewShot && updatedHoleState.shots.length > 0) {
           // Get the latest shot
           const lastShot = updatedHoleState.shots[updatedHoleState.shots.length - 1];
-          
-          // Play appropriate shot sound
-          soundManager.playShot(shotType);
-          
-          // If ball went in water, play water sound
-          if (lastShot.lie === 'water') {
-            setTimeout(() => {
-              soundManager.playResult('water');
-            }, 300);
-          }
-          
-          // If shot completed the hole, play hole-in sound
-          if (lastShot.distanceRemaining === 0) {
-            setTimeout(() => {
-              soundManager.playResult('hole-in');
-            }, 300);
-          }
           
           // Force log of shot data to debug
           console.log('Latest shot data:', {
@@ -273,7 +255,6 @@ const Game: React.FC<GameProps> = ({ course, golferCards }) => {
             // Show the leaderboard modal after a short delay
             setTimeout(() => {
               setShowLeaderboardModal(true);
-              playSound('dice-land', 0.6); // Play a sound for the modal
             }, 1000);
           }
         } catch (error) {
@@ -281,7 +262,6 @@ const Game: React.FC<GameProps> = ({ course, golferCards }) => {
           // If there's an error, still show the modal to be safe
           setTimeout(() => {
             setShowLeaderboardModal(true);
-            playSound('dice-land', 0.6);
           }, 1000);
         }
       };
@@ -300,22 +280,8 @@ const Game: React.FC<GameProps> = ({ course, golferCards }) => {
     }
   }, [currentHoleState]);
 
-  // Initialize sound system when component mounts
-  useEffect(() => {
-    // Initialize sounds
-    soundManager.initialize();
-    
-    // Play a startup sound
-    soundManager.play('click');
-    
-    // Cleanup function is not needed as soundManager persists
-  }, []);
-
   // Handle moving to the next hole
   const handleNextHole = () => {
-    // Play click sound
-    soundManager.play('click');
-    
     // Check if all golfers are used before moving to the next hole
     const allGolfersUsed = gameState.golferCards.every(card => card.isUsed);
     
@@ -337,25 +303,31 @@ const Game: React.FC<GameProps> = ({ course, golferCards }) => {
   const handleLeaderboardSubmit = (entry: LeaderboardEntry) => {
     setLeaderboardEntry(entry);
     setShowLeaderboard(true);
-    
-    // Play celebration sound
-    playSound('dice-roll', 0.7);
   };
 
   return (
-    <div className="container">
-      <header className="mb-4 text-center">
-        <h1 className="h3 fw-bold text-secondary">🎲 Dice Golf</h1>
-        <p className="text-muted">
-          Playing {course.name}
-          <button 
-            className="btn btn-sm btn-outline-success ms-3"
+    <div className="game-container container-fluid p-0">
+      {/* Game Header */}
+      <div className="game-header bg-dark text-white p-3 d-flex justify-content-between align-items-center">
+        <div>
+          <h1 className="h4 mb-0">{course.name}</h1>
+          <div className="small text-secondary">
+            {course.holes.length} Holes
+          </div>
+        </div>
+        
+        {/* Add Volume Control here */}
+        <div className="d-flex align-items-center">
+          <VolumeControl className="me-3" />
+          
+          <button
+            className="btn btn-outline-light btn-sm ms-2"
             onClick={() => setShowViewOnlyLeaderboard(true)}
           >
-            <small>🏆 View Leaderboard</small>
+            Leaderboard
           </button>
-        </p>
-      </header>
+        </div>
+      </div>
       
       {showGolferRefreshMessage && (
         <div className="alert alert-success mb-4 text-center">

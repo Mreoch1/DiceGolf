@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { playSound } from '../utils/soundEffects';
 
 interface DiceProps {
   isRolling: boolean;
@@ -30,9 +29,6 @@ const Dice: React.FC<DiceProps> = ({ isRolling, value = 0, delay = 0 }) => {
           faceIndex.current = (faceIndex.current + 1) % shuffledFaces.length;
           setDiceContent(shuffledFaces[faceIndex.current]);
         }, 100);
-        
-        // Play the dice rolling sound
-        playSound('dice-roll', 0.7);
       }, delay);
       
       return () => {
@@ -51,9 +47,6 @@ const Dice: React.FC<DiceProps> = ({ isRolling, value = 0, delay = 0 }) => {
       // Show the result with animation
       setDiceClass('dice dice-result');
       setDiceContent(DICE_FACES[value - 1]);
-      
-      // Play the dice landing sound
-      playSound('dice-land', 0.8);
     } else {
       // Reset to question mark when not rolling and no value
       setDiceClass('dice');
