@@ -150,6 +150,79 @@ The project uses Bootstrap for styling with a custom CSS implementation:
 - We use CRACO (Create React App Configuration Override) to manage PostCSS configuration
 - This setup avoids issues with Tailwind CSS's PostCSS plugin
 
+## Leaderboard Configuration
+
+The game uses Supabase to store and retrieve leaderboard data. This ensures all players see the same leaderboard regardless of which device they use.
+
+### Setup Instructions
+
+1. Create a `.env.local` file in the project root with the following:
+```
+REACT_APP_SUPABASE_URL=https://afilynsbqsoruoteplow.supabase.co
+REACT_APP_SUPABASE_ANON_KEY=your_actual_anon_key_here
+```
+
+2. Replace `your_actual_anon_key_here` with your actual Supabase anon key.
+   - You can find this in your Supabase project settings > API > Project API keys > anon public
+
+3. Make sure your Supabase database has a `leaderboard` table with the following columns:
+   - `id` (uuid, primary key)
+   - `playername` (text)
+   - `coursename` (text)
+   - `score` (integer)
+   - `date` (timestamp with timezone)
+   - `location` (jsonb)
+   - `holecount` (integer)
+
+### Troubleshooting
+
+If leaderboard data isn't syncing properly:
+
+1. Use the Debug Tools in the app to test Supabase connectivity
+2. Check that your Supabase URL and anon key are correctly set in `.env.local`
+3. Verify that your network allows connections to Supabase
+4. Ensure the leaderboard table schema matches the required format
+
+## Sound System
+
+Dice Golf includes a comprehensive sound system with effects for all game events:
+
+- **Golf Shots**: Different sounds for swing and putt shots
+- **Results**: Special sound for when the ball goes in the hole
+- **Dice**: Realistic dice rolling sound effects
+- **UI**: Click sounds for buttons and interactions
+
+### Sound Implementation
+
+The game uses a direct Audio API approach for sound management:
+- Each component handles its own sound playback
+- Shot Controls component manages swing/putt sounds
+- Game component manages dice roll sounds
+- useGameReducer hook manages the hole-in sound
+- Volume can be controlled through the Volume Control component
+
+### Sound Files
+
+The game uses optimized audio formats for better performance:
+- `.wav` files for most game sounds (swing, putt, dice roll, click)
+- `.ogg` file for the hole-in sound
+
+These audio files are smaller and load faster than MP3 files while maintaining good sound quality.
+
+### Testing Sounds
+
+In development mode, you can:
+1. Use the Volume Control in the top-right corner to adjust or mute sounds
+2. Access the sound test page at `/sound-test.html`
+
+### Sound Credits
+
+All sound effects are sourced from free sound libraries:
+- Mixkit (https://mixkit.co/free-sound-effects/)
+- Freesound (https://freesound.org/)
+
+For details on specific sounds and attribution, see `public/sounds/README.md`.
+
 ---
 
 Enjoy your round of Dice Golf! ⛳
