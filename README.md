@@ -215,13 +215,28 @@ In development mode, you can:
 1. Use the Volume Control in the top-right corner to adjust or mute sounds
 2. Access the sound test page at `/sound-test.html`
 
-### Sound Credits
+## Background Music
 
-All sound effects are sourced from free sound libraries:
-- Mixkit (https://mixkit.co/free-sound-effects/)
-- Freesound (https://freesound.org/)
+Dice Golf features background music that plays on the course selection and leaderboard screens:
 
-For details on specific sounds and attribution, see `public/sounds/README.md`.
+### Music Implementation
+
+- **Context-based**: Uses React Context API to share music state across components
+- **Persistent Settings**: Volume and mute preferences are saved to localStorage
+- **User Control**: Separate controls for music distinct from game sound effects
+- **Responsive**: Auto-pauses when navigating away from music-enabled screens
+
+### Music Controls
+
+The music controls are located in the top-right corner of the screen and include:
+- Play/Pause button
+- Mute/Unmute button
+- Volume slider specific to music
+
+### Music File
+
+The background music file is:
+- `Course-leaderboard music.wav` - A relaxing soundtrack for the menu screens
 
 ---
 

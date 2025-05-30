@@ -2,18 +2,26 @@ import React, { useState, useEffect } from 'react';
 import './App.css';
 import Game from './components/Game';
 import Leaderboard from './components/Leaderboard';
-import SoundToggle from './components/SoundToggle';
+import SimpleSoundToggle from './components/SimpleSoundToggle';
+import MusicControl from './components/MusicControl';
 import { augustaNationalFront9, pebbleBeachFront9, fullCourse } from './data/courses';
 import { getRandomGolfers } from './data/golfers';
 import { Course } from './types';
 import { getLeaderboard } from './utils/leaderboardService';
 import { populateLeaderboard } from './utils/mockLeaderboardData';
+import { initSounds } from './utils/gameUtils';
+import { MusicProvider, useMusicPlayer } from './utils/MusicContext';
 
 function App() {
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
   const [gameStarted, setGameStarted] = useState(false);
   const [showLeaderboard, setShowLeaderboard] = useState(false);
   const [leaderboardInitialized, setLeaderboardInitialized] = useState(false);
+
+  // Initialize sounds
+  useEffect(() => {
+    initSounds();
+  }, []);
 
   // Initialize leaderboard with mock data if it's empty
   useEffect(() => {
@@ -62,10 +70,21 @@ function App() {
 
   // Render the course selection screen
   const renderCourseSelection = () => {
+    const { isPlaying } = useMusicPlayer();
+    
     return (
       <div className="card mx-auto shadow" style={{ maxWidth: '40rem' }}>
         <div className="card-body">
-          <h2 className="card-title h4 mb-4">Select a Course</h2>
+          <h2 className="card-title h4 mb-3">Select a Course</h2>
+          
+          {!isPlaying && (
+            <div className="alert alert-info mb-4">
+              <div className="d-flex align-items-center">
+                <i className="fas fa-music me-2"></i>
+                <div>Enhance your experience with our background music! Click the play button in the top-right corner.</div>
+              </div>
+            </div>
+          )}
           
           <div className="row g-4 mb-4">
             <div className="col-md-6">
@@ -150,10 +169,12 @@ function App() {
 
   // Render the leaderboard
   const renderLeaderboard = () => {
+    const { isPlaying } = useMusicPlayer();
+    
     return (
       <div className="card mx-auto shadow" style={{ maxWidth: '55rem' }}>
         <div className="card-body">
-          <div className="d-flex justify-content-between align-items-center mb-4">
+          <div className="d-flex justify-content-between align-items-center mb-3">
             <h2 className="card-title h4 mb-0">All-Time Leaderboard</h2>
             <button 
               onClick={() => setShowLeaderboard(false)} 
@@ -163,6 +184,15 @@ function App() {
             </button>
           </div>
           
+          {!isPlaying && (
+            <div className="alert alert-info mb-4">
+              <div className="d-flex align-items-center">
+                <i className="fas fa-music me-2"></i>
+                <div>Enhance your leaderboard experience with our background music! Click the play button in the top-right corner.</div>
+              </div>
+            </div>
+          )}
+          
           <Leaderboard />
         </div>
       </div>
@@ -170,36 +200,41 @@ function App() {
   };
 
   return (
-    <div className="min-vh-100 bg-light">
-      <header className="bg-success text-white p-4 shadow-sm mb-4">
-        <div className="container">
-          <div className="d-flex justify-content-between align-items-center">
-            <div>
-              <h1 className="display-5 fw-bold">🎲 Dice Golf</h1>
-              <p className="text-white-50">A strategic dice-driven golf game</p>
+    <MusicProvider>
+      <div className="min-vh-100 bg-light">
+        <header className="bg-success text-white p-4 shadow-sm mb-4">
+          <div className="container">
+            <div className="d-flex justify-content-between align-items-center">
+              <div>
+                <h1 className="display-5 fw-bold">🎲 Dice Golf</h1>
+                <p className="text-white-50">A strategic dice-driven golf game</p>
+              </div>
+              <div className="d-flex gap-3">
+                <MusicControl />
+                <SimpleSoundToggle />
+              </div>
             </div>
-            <SoundToggle />
           </div>
-        </div>
-      </header>
-      
-      <main className="container py-4">
-        {gameStarted ? (
-          <Game 
-            course={selectedCourse!} 
-            golferCards={getInitialGolfers()}
-          />
-        ) : (
-          showLeaderboard ? renderLeaderboard() : renderCourseSelection()
-        )}
-      </main>
-      
-      <footer className="bg-dark text-white-50 text-center py-3 mt-auto">
-        <div className="container">
-          <small>&copy; {new Date().getFullYear()} Dice Golf. A strategy dice golf game.</small>
-        </div>
-      </footer>
-    </div>
+        </header>
+        
+        <main className="container py-4">
+          {gameStarted ? (
+            <Game 
+              course={selectedCourse!} 
+              golferCards={getInitialGolfers()}
+            />
+          ) : (
+            showLeaderboard ? renderLeaderboard() : renderCourseSelection()
+          )}
+        </main>
+        
+        <footer className="bg-dark text-white-50 text-center py-3 mt-auto">
+          <div className="container">
+            <small>&copy; {new Date().getFullYear()} Dice Golf. A strategy dice golf game.</small>
+          </div>
+        </footer>
+      </div>
+    </MusicProvider>
   );
 }
 

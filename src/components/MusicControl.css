@@ -1,0 +1,38 @@
+.music-control {
+  background-color: rgba(0, 0, 0, 0.1);
+  border-radius: 0.375rem;
+  padding: 0.5rem;
+}
+
+.music-control button {
+  min-width: 36px;
+}
+
+.music-control .form-range {
+  height: 0.5rem;
+}
+
+/* Custom styling for the range input */
+.music-control .form-range::-webkit-slider-thumb {
+  background: #28a745;
+}
+
+.music-control .form-range::-moz-range-thumb {
+  background: #28a745;
+}
+
+.music-control .form-range::-ms-thumb {
+  background: #28a745;
+}
+
+/* Styling for when music is playing */
+.music-control.is-playing button:first-child {
+  background-color: #28a745;
+  color: white;
+}
+
+/* Styling for when music is muted */
+.music-control.is-muted button:nth-child(2) {
+  background-color: #dc3545;
+  color: white;
+} 
