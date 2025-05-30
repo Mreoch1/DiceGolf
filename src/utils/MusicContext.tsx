@@ -70,7 +70,7 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       audio.src = '';
       audioRef.current = null;
     };
-  }, []);
+  }, [isMuted, volume]);
 
   // Save volume preference
   useEffect(() => {
